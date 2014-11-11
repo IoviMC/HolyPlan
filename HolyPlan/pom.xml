@@ -1,0 +1,241 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>es.iovanamartinez.holyplan</groupId>
+  <artifactId>HolyPlan</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>HolyPlan</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+  	<spring.version>4.0.5.RELEASE</spring.version>
+  	<spring.security.version>3.2.4.RELEASE</spring.security.version>
+  	<hibernate.version>4.1.9.Final</hibernate.version>
+  	<sel4j.version>1.7.7</sel4j.version>
+  </properties>
+
+  <dependencies>
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<version>4.11</version>
+		<scope>test</scope>
+	</dependency>
+	
+	<dependency>
+	<groupId>commons-validator</groupId>
+	<artifactId>commons-validator</artifactId>
+	<version>1.4.0</version>
+</dependency>
+		<!--  
+	<dependency>
+		<groupId>org.apache.tomcat</groupId>
+		<artifactId>servlet-api</artifactId>
+		<version>6.0.39</version>
+		<scope>provided</scope>
+	</dependency>-->
+	
+	<dependency>
+	<groupId>org.glassfish.web</groupId>
+	<artifactId>javax.servlet.jsp</artifactId>
+	<version>2.3.2</version>
+</dependency>
+	
+		
+		  <!-- Sel4j -->
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>jcl-over-slf4j</artifactId>
+		<version>${sel4j.version}</version>
+		<scope>runtime</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-api</artifactId>
+		<version>${sel4j.version}</version>
+		<scope>runtime</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-log4j12</artifactId>
+		<version>${sel4j.version}</version>
+		<scope>runtime</scope>
+	</dependency>
+	
+	<!-- log4j -->
+    <dependency>
+		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.17</version>
+    </dependency>
+		
+	<!-- JavaEE API -->
+    <dependency>
+	    <groupId>javax</groupId>
+	    <artifactId>javaee-api</artifactId>
+	    <version>6.0</version>
+	    <scope>provided</scope>
+	</dependency>
+		
+	<!-- Spring dependencies -->
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-core</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-web</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-webmvc</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-jdbc</artifactId>
+		<version>${spring.version}</version>
+    </dependency>
+    <dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-orm</artifactId>
+		<version>${spring.version}</version>
+	</dependency>
+    <dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-context</artifactId>
+		<version>${spring.version}</version>
+		<exclusions>
+		 <exclusion>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+		 </exclusion>
+		</exclusions>
+    </dependency>
+    
+    
+    <dependency> 
+     <groupId>org.springframework</groupId> 
+     <artifactId>spring-aspects</artifactId> 
+     <version>${spring.version}</version> 
+</dependency>
+	<!-- Spring Security -->
+	    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
+      <version>${spring.security.version}</version>
+   </dependency>
+	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-web</artifactId>
+		<version>${spring.security.version}</version>
+	</dependency> 
+	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-config</artifactId>
+		<version>${spring.security.version}</version>
+	</dependency>
+		
+	<!-- Spring Security JSP Taglib -->
+	<dependency>
+		<groupId>org.springframework.security</groupId>
+		<artifactId>spring-security-taglibs</artifactId>
+		<version>${spring.security.version}</version>
+	</dependency>
+		
+	<!-- Spring WebFlow 
+	<dependency>
+		<groupId>org.springframework.webflow</groupId>
+		<artifactId>spring-faces</artifactId>
+		<version>2.3.2.RELEASE</version> 
+	</dependency>-->
+
+	
+	
+	 <!-- Corrige bug? -->
+   <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>${spring.version}</version>
+    </dependency>
+    
+	<!-- jstl for jsp page -->
+	<dependency>
+		<groupId>jstl</groupId>
+		<artifactId>jstl</artifactId>
+		<version>1.2</version>
+	</dependency>
+	<dependency>
+		<groupId>org.eclipse.jetty.orbit</groupId>
+		<artifactId>javax.servlet.jsp.jstl</artifactId>
+		<version>1.2.0.v201105211821</version>
+	</dependency>
+		
+	<!-- DataBase Connector -->
+    <dependency>
+		<groupId>mysql</groupId>
+		<artifactId>mysql-connector-java</artifactId>
+		<version>5.1.31</version>
+    </dependency>
+    
+    <!-- Hibernate -->
+    <dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-core</artifactId>
+		<version>${hibernate.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.hibernate</groupId>
+		<artifactId>hibernate-entitymanager</artifactId>
+		<version>${hibernate.version}</version>
+   		<scope>runtime</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.hibernate.javax.persistence</groupId>
+		<artifactId>hibernate-jpa-2.0-api</artifactId>
+		<version>1.0.1.Final</version>
+	</dependency>
+	
+	
+	<!--  
+	<dependency>
+      <groupId>org.apache.myfaces.tomahawk</groupId>
+      <artifactId>tomahawk</artifactId>
+      <version>1.1.14</version>
+    </dependency>-->
+    
+    
+  </dependencies>
+  
+  <build>
+    <plugins>	
+		<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+      <!--  
+      <plugin>
+    	<groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.0</version>
+        <configuration>
+      		<server>localhost</server>
+      		<url>http://localhost:8080/manager/text</url>
+      		<update>true</update>
+    	</configuration>
+      </plugin>
+      -->
+    </plugins>
+    <finalName>HolyPlan</finalName>
+  </build>
+  
+</project>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+						http://www.springframework.org/schema/security
+						http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+ 
+  <global-method-security pre-post-annotations="enabled" />
+
+  
+  <http auto-config="true">
+  	<intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+    <intercept-url pattern="/public/*" access="IS_AUTHENTICATED_ANONYMOUSLY"/>
+    <intercept-url pattern="/private/*" access="ROLE_USUARIO" />
+   
+    
+    <form-login login-page="/" 
+                default-target-url="/private/login" 
+                authentication-failure-url="/errorLogin" />
+    
+    <logout logout-url="/logout" logout-success-url="/" invalidate-session="true" delete-cookies="JSESSIONID" />
+    
+    <access-denied-handler ref="accessDeniedHandler"/>
+  </http>
+  
+  <beans:bean id="daoAuthenticationProvider"
+	  class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+	  <beans:property name="userDetailsService" ref="userDetailsService"/>
+	</beans:bean>
+	
+	<beans:bean id="authenticationManager"
+	    class="org.springframework.security.authentication.ProviderManager">
+	  <beans:property name="providers">
+	    <beans:list>
+	      <beans:ref local="daoAuthenticationProvider" />
+	    </beans:list>
+	  </beans:property>
+	</beans:bean>
+ 
+  <authentication-manager>
+	  <authentication-provider user-service-ref="userDetailsService">
+	  </authentication-provider>
+  </authentication-manager>
+  
+  <!--Por que hay que definirla así y no se puede con anotaciones?-->
+  <beans:bean id="userDetailsService"
+        class="es.iovanamartinez.holyplan.service.impl.UserDetailsServiceImpl" />
+  
+  <beans:bean id="exceptionTranslationFilter"
+     class="org.springframework.security.web.access.ExceptionTranslationFilter">
+	  <beans:property name="authenticationEntryPoint" ref="authenticationEntryPoint"/>
+	  <beans:property name="accessDeniedHandler" ref="accessDeniedHandler"/>
+	</beans:bean>
+	
+	<beans:bean id="authenticationEntryPoint"
+	     class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+	  <beans:property name="loginFormUrl" value="/public/index.jsp?error=notLoggedIn"/>
+	</beans:bean>
+	
+	<beans:bean id="accessDeniedHandler"
+	     class="org.springframework.security.web.access.AccessDeniedHandlerImpl">
+	  <beans:property name="errorPage" value="/public/accesoDenegado.jsp"/>
+	</beans:bean>
+</beans:beans>

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:mvc="http://www.springframework.org/schema/mvc" 
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="
+	        http://www.springframework.org/schema/beans     
+	        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	        http://www.springframework.org/schema/context 
+	        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	        http://www.springframework.org/schema/mvc 
+	  	 	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+	   		http://www.springframework.org/schema/tx 
+	   		http://www.springframework.org/schema/tx/spring-tx.xsd
+	   		http://www.springframework.org/schema/jee 
+	   		http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+	
+	<context:annotation-config/>
+
+	
+	<context:component-scan base-package="es.iovanamartinez.holyplan.service"/>
+	<context:component-scan base-package="es.iovanamartinez.holyplan.dao"/>
+	<context:component-scan base-package="es.iovanamartinez.holyplan.controlador.validador"/>
+	
+	<!--
+	<tx:annotation-driven />
+	-->
+	<!-- Alvaro 
+	<bean id="myEmf" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+      <property name="persistenceUnitName" value="holyPlanPULocal"/>
+   </bean>
+    
+   <bean id="myTxManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+     <property name="entityManagerFactory" ref="myEmf"/>
+   </bean>-->
+   <!-- falla en lo mismo que la de alvaro 
+  
+   <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="holyPlanPULocal" />
+    </bean>
+    
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+         <property name="entityManagerFactory" ref="entityManagerFactory" />
+     </bean>
+    
+    <tx:annotation-driven />
+    
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+-->
+   
+   <!-- no compila -->
+   <!--  
+   <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" >  
+  <property name="persistenceUnits">  
+    <map>  
+      <entry key="holyPlanPULocal" value="jdbc/holyPlanTest"/> 
+    </map>  
+  </property>  
+</bean>  
+  
+<tx:jta-transaction-manager/>  
+<tx:annotation-driven/>  
+ -->  
+  
+   <!--  
+   <bean class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"> 
+	  <property name="persistenceUnitName" value="holyPlanPULocal" />
+</bean> 
+
+<tx:annotation-driven />
+   
+<tx:jta-transaction-manager/>-->
+
+<!--  
+<bean id="entityManagerFactory"
+            class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" >
+        <property name="dataSource" ref="datasource"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="showSql" value="true" />
+                <property name="generateDdl" value="true" />
+            </bean>
+        </property>
+        <property name="persistenceUnitName" value="holyPlanPULocal" />
+    </bean>
+    
+    <jee:jndi-lookup id="datasource" jndi-name="jdbc/holyPlanTest" />
+    
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager" />
+    
+-->
+
+
+ <!-- 
+<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean" > 
+	<property name="jpaVendorAdapter"> 
+	<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"> 
+		<property name="showSql" value="true" /> 
+		<property name="generateDdl" value="true" /> 
+	</bean> 
+	</property> 
+	<property name="persistenceUnitName" value="holyPlanPULocal" /> 
+</bean> 
+<tx:annotation-driven transaction-manager="transactionManager" /> 
+<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" /> 
+<tx:jta-transaction-manager />
+
+ -->
+
+<!-- Alvaro2 
+<tx:annotation-driven /> 
+<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean"> 
+	<property name="persistenceUnitName" value="holyPlanPULocal" /> 
+</bean> 
+<bean id="entityManager" class="org.springframework.orm.jpa.support.SharedEntityManagerBean"> 
+	<property name="entityManagerFactory" ref="entityManagerFactory" /> 
+</bean>
+
+<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"> 
+	<property name="entityManagerFactory" ref="entityManagerFactory" /> 
+</bean>
+-->
+
+
+
+<tx:annotation-driven/>
+
+<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+    <property name="entityManagerFactory" ref="entityManagerFactory" />
+</bean>
+
+<!-- FactoryBean that creates the EntityManagerFactory -->
+<bean id="entityManagerFactory"
+    class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <property name="jpaVendorAdapter">
+        <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+            <property name="database" value="MYSQL" />
+            <property name="showSql" value="false" />
+        </bean>
+    </property>
+    <property name="jpaProperties">
+        <props>
+            <prop key="hibernate.show_sql">true</prop>
+            <prop key="hibernate.format_sql">true</prop>
+        </props>
+    </property>
+    <property name="dataSource" ref="dataSource" />
+</bean>
+
+
+<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+    <property name="jndiName" value="java:comp/env/jdbc/holyPlanTest" />
+</bean>
+
+
+
+
+
+
+
+
+
+
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename"><value>/messages/messages</value></property>
+		<property name="defaultEncoding" value="UTF-8" /> 
+	</bean>
+	
+	<!-- Spring MVC -->
+	<import resource="mvc-dispatcher-servlet.xml"/>
+	
+	<!-- Spring Security -->
+	<import resource="spring-security.xml"/>
+</beans>
