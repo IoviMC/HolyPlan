@@ -44,6 +44,10 @@ public class Usuario {
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<ViajeUsuario> viajes = new HashSet<ViajeUsuario>();
 	
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	private Set<UsuarioAmigo> amigos = new HashSet<UsuarioAmigo>();
+	
+	
 	//CONSTRUCTORES
 	public Usuario(){
 		super();
@@ -138,25 +142,35 @@ public class Usuario {
 		this.viajes = viajes;
 	}
 	
+	public Set<UsuarioAmigo> getAmigos(){
+		return amigos;
+	}
+	
+	public void setAmigos(Set<UsuarioAmigo> amigos){
+		this.amigos = amigos;
+	}
+	
 	//METODOS
 	public void anadirViaje(ViajeUsuario viaje){
 		this.viajes.add(viaje);
+	}
+
+	public void anadirAmigo(UsuarioAmigo usuarioAmigo) {
+		this.amigos.add(usuarioAmigo);		
 	}
 	
 	public String generarHashUsuario() {
 		try {
 			MessageDigest codificador = MessageDigest.getInstance("MD5");
 			
-			String hashPrev = new String(this.getNombreUsuario()
-					+ Calendar.getInstance().hashCode() + this.getId() + "hash");
+			String hashPrev = new String(this.getNombreUsuario() + Calendar.getInstance().hashCode() + this.getId() + "hash");
 			byte[] hashPrevEnBytes = hashPrev.getBytes();
 			
 			byte[] hashEnBytes = codificador.digest(hashPrevEnBytes);
 			
 			StringBuffer sb = new StringBuffer();
 			for (int i = 0; i < hashEnBytes.length; i++) {
-				sb.append(Integer.toString((hashEnBytes[i] & 0xff) + 0x100, 16)
-						.substring(1));
+				sb.append(Integer.toString((hashEnBytes[i] & 0xff) + 0x100, 16).substring(1));
 			}
 			
 			return (sb.toString());
@@ -164,5 +178,44 @@ public class Usuario {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((nombreUsuario == null) ? 0 : nombreUsuario.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Usuario)) {
+			return false;
+		}
+		Usuario other = (Usuario) obj;
+
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
+			return false;
+		}
+		if (nombreUsuario == null) {
+			if (other.nombreUsuario != null) {
+				return false;
+			}
+		} else if (!nombreUsuario.equals(other.nombreUsuario)) {
+			return false;
+		}
+		return true;
 	}
 }

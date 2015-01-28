@@ -1,22 +1,32 @@
 package es.iovanamartinez.holyplan.dominio.vo;
 
+import java.io.Serializable;
 
-public class ViajeUsuarioVo {
+import es.iovanamartinez.holyplan.dominio.ViajeUsuario;
+
+
+public class ViajeUsuarioVo implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	//ATRIBUTOS
 	private UsuarioVo usuario;
 	private ViajeVo viaje;
 	private RolVo rol;
+	private EstadoVo estado;
 	
 	//CONSTRUCTORES
 	public ViajeUsuarioVo() {
 		super();
 	}
 
-	public ViajeUsuarioVo(UsuarioVo usuario, ViajeVo viaje, RolVo rol) {
-		this.usuario = usuario;
-		this.viaje = viaje;
-		this.rol = rol;
-	}
+	public ViajeUsuarioVo(ViajeUsuario viajeUsuario) {
+		this.usuario = new UsuarioVo(viajeUsuario.getUsuario());
+		this.viaje = new ViajeVo(viajeUsuario.getViaje());
+		this.rol = new RolVo(viajeUsuario.getRol());
+		this.estado = new EstadoVo(viajeUsuario.getEstado());
+	}	
 	
 	//GETTERS AND SETTERS
 	public UsuarioVo getUsuario(){
@@ -43,4 +53,11 @@ public class ViajeUsuarioVo {
 		this.rol = rol;
 	}
 
+	public EstadoVo getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoVo estado) {
+		this.estado = estado;
+	}
 }

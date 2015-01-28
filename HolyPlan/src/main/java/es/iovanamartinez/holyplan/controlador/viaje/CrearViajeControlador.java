@@ -26,27 +26,26 @@ public class CrearViajeControlador {
 	@Autowired
 	private CrearViajeValidador crearViajeValidador;
 	
-	@RequestMapping(value = "/private/crearViaje", method = RequestMethod.GET)
+	@RequestMapping(value = "/viaje/crearViaje", method = RequestMethod.GET)
 	public String mostrarForm(ModelMap model){
 		CrearViajeForm crearViajeForm = new CrearViajeForm();
 		model.addAttribute("crearViajeForm", crearViajeForm);
-		return "/private/crear-viaje";
+		return "/private/viaje/crear-viaje";
 	}
 	
-	@RequestMapping(value = "/private/crearViaje", method = RequestMethod.POST)
+	@RequestMapping(value = "/viaje/crearViaje", method = RequestMethod.POST)
 	public String procesarFormulario(@ModelAttribute CrearViajeForm crearViajeForm, ModelMap model, BindingResult result, HttpServletRequest request){
-		HttpSession session = request.getSession();
-		UsuarioVo usuario = (UsuarioVo) session.getAttribute("usuario");
-		
+	
 		crearViajeValidador.validate(crearViajeForm, result);
 		if (!result.hasErrors()) {
-			ViajeVo viaje = new ViajeVo(crearViajeForm.getNombreViaje(), crearViajeForm.getFecha(), crearViajeForm.getDuracion());
-			//ViajeUsuarioVo viajeUsuario = new ViajeUsuarioVo();
-			//ViajeVo viajeCreado = viajeService.crearViaje(usuario, viaje);
-			viajeService.crearViaje(usuario, viaje);
-			//viajeService.crearViajeUsuario(usuario, viajeCreado);
+			HttpSession session = request.getSession();
+			UsuarioVo usuario = (UsuarioVo) session.getAttribute("usuario");
+		
+			ViajeVo viaje = new ViajeVo(crearViajeForm.getNombreViaje(), crearViajeForm.getFecha(), crearViajeForm.getDuracion(), crearViajeForm.getDescripcion());		
+			viajeService.crearViaje(usuario.getId(), viaje);		
+			
 			model.addAttribute("mensajeConfirmacion", "Viaje creado con &eacute;xito");
 		}
-		return "/private/crear-viaje";
+		return "/private/viaje/crear-viaje";
 	}
 }

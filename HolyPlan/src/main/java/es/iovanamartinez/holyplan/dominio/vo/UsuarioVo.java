@@ -1,8 +1,16 @@
 package es.iovanamartinez.holyplan.dominio.vo;
 
+import java.io.Serializable;
+
 import es.iovanamartinez.holyplan.dominio.Usuario;
 
-public class UsuarioVo {
+public class UsuarioVo implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 695286849921101051L;
+	
 	//ATRIBUTOS
 	private Integer id;
 	private String nombreUsuario;

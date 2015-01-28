@@ -12,6 +12,11 @@ html,body {
 	background:#FFF;
 }
 
+ul{
+	list-style: none;
+	padding: 0;
+}
+
 #cabecera{
 	background:#00801C;
 	color:#C2F4AE;
@@ -29,9 +34,15 @@ html,body {
 	height:100%;
 }
 
-#lat-izq{
+#lat_izquierdo{
 	float:left;
-	width:60%;
+	width:20%;
+	height:100%;
+}
+
+#lat_derecho{
+	float:right;
+	width:75%;
 	height:100%;
 }
 
@@ -41,6 +52,19 @@ html,body {
 	width: 30%;
 }
 
-H2{
+button.icono.eliminar {
+	background-image: url(../img/borrar.png);
+}
+
+button.icono {
+	border: 0;
+	background-color: transparent;
+	height: 16px;
+	width: 16px;
+	padding: 0;
+	margin: 0;
+}
+
+h2{
 	line-height:1.6em;
 }

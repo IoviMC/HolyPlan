@@ -14,7 +14,7 @@ import es.iovanamartinez.holyplan.service.UsuarioService;
 public class RegistroUsuarioValidador implements Validator {
 	private static final int MAX_LONG_NOMBRE = 30;
 	private static final int MAX_LONG_CONTRASENA = 45;
-	private static final int MIN_LONG_NOMBRE = 4;
+	private static final int MIN_LONG_NOMBRE = 3;
 	private static final int MIN_LONG_CONTRASENA = 6;
 	private static final int MAX_LONG_EMAIL = 245;
 

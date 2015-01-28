@@ -12,6 +12,7 @@ import es.iovanamartinez.holyplan.controlador.formulario.CrearViajeForm;
 public class CrearViajeValidador implements Validator{
 	private static final int MAX_LONG_NOMBRE = 30;
 	private static final int MIN_LONG_NOMBRE = 2;
+	private static final int MAX_LONG_DESCRIPCION = 250;
 
 	@Override
 	public boolean supports(Class<?> clazz) {
@@ -23,6 +24,7 @@ public class CrearViajeValidador implements Validator{
 		CrearViajeForm viaje = (CrearViajeForm) target;
 		
 		String nombreViaje = viaje.getNombreViaje();
+		String descripcion = viaje.getDescripcion();
 		String patron = "^[A-Za-z][A-Za-z0-9-_\\.]*$";
 		if (nombreViaje == null || nombreViaje.isEmpty() || nombreViaje.length() > MAX_LONG_NOMBRE || nombreViaje.length() < MIN_LONG_NOMBRE){
 			errors.rejectValue("nombreViaje", "error.viaje.nombre.longitud");
@@ -45,6 +47,9 @@ public class CrearViajeValidador implements Validator{
 		if (viaje.getDuracion() != null && viaje.getDuracion() < 0) {
 			errors.rejectValue("duracion", "error.viaje.duracion.negativa");
 		}
+		
+		if (descripcion != null && !descripcion.isEmpty() && descripcion.length() > MAX_LONG_DESCRIPCION){
+			errors.rejectValue("descripcion", "error.viaje.descripcion.longitud");
+		}
 	}
-
 }

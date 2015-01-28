@@ -11,7 +11,7 @@ import es.iovanamartinez.holyplan.service.UsuarioService;
 @Component
 public class EditarNombreUsuarioValidador implements Validator{
 	private static final int MAX_LONG_NOMBRE = 30;
-	private static final int MIN_LONG_NOMBRE = 4;
+	private static final int MIN_LONG_NOMBRE = 3;
 	
 	@Autowired
 	UsuarioService usuarioService;

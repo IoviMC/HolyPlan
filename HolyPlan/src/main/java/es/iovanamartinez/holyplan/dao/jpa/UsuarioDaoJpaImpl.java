@@ -12,16 +12,9 @@ import es.iovanamartinez.holyplan.dominio.Usuario;
 
 @Repository(value = "usuarioDao")
 public class UsuarioDaoJpaImpl extends GenericDaoJpaImpl<Usuario> implements UsuarioDao {
-	
-	//@PersistenceUnit
-	//@PersistenceContext(unitName="holyPlanPULocal")
-	//private EntityManagerFactory factory;
-	private EntityManager em;
-	 
-	  @PersistenceContext
-	 public void setEntityManager(EntityManager entityManager) {
-	     this.em = entityManager;
-	 }
+
+	@PersistenceContext
+    private EntityManager em;
 	
 	@Override
 	public Usuario buscarPorNombreUsuario(String nombreUsuario) {

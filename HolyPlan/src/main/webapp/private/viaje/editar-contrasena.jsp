@@ -5,6 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>HolyPlan - Modificar contrase&ntilde;a</title>
+	<link rel="stylesheet" href="<c:url value="/resources/css/normalize.css" />" type="text/css" />
 	<link rel="stylesheet" href="<c:url value="/resources/css/estilo.css" />" type="text/css" />
 </head>
 <body>
@@ -12,7 +13,7 @@
 		<h1>HolyPlan</h1>
 	</div>
 	<div id="cuerpo">
-		<form:form method="POST" modelAttribute="editarContrasenaForm" action="${pageContext.request.contextPath}/private/editarContrasena">
+		<form:form method="POST" modelAttribute="editarContrasenaForm" action="${pageContext.request.contextPath}/usuario/editarContrasena">
 			<table>
 				<tr>
 				    <td><form:label path="contrasenaActual">Contrase&ntilde;a actual:</form:label></td>

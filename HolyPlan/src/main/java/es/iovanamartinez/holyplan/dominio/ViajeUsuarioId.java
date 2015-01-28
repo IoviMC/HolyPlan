@@ -12,6 +12,11 @@ public class ViajeUsuarioId implements Serializable {
 		super();
 	}
 
+	public ViajeUsuarioId(Integer idUsuario, Integer idViaje) {
+		this.usuario = idUsuario;
+		this.viaje = idViaje;
+	}
+
 	public Integer getUsuario() {
 		return usuario;
 	}
@@ -65,5 +70,4 @@ public class ViajeUsuarioId implements Serializable {
 		}
 		return true;
 	}
-
 }

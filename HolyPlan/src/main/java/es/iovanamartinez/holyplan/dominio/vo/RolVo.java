@@ -1,9 +1,27 @@
 package es.iovanamartinez.holyplan.dominio.vo;
 
- class RolVo {
+import java.io.Serializable;
 
+import es.iovanamartinez.holyplan.dominio.Rol;
+
+ public class RolVo implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String rol;
+	
+	//CONSTRUCTORES
+	public RolVo(){
+		super();
+	}
+	
+	public RolVo(Rol rol){
+		this.id = rol.getId();
+		this.rol = rol.getRol();
+	}
 	
 	//GETTERS AND SETTERS
 	public Integer getId(){

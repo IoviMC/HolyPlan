@@ -1,6 +1,10 @@
 package es.iovanamartinez.holyplan.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -15,9 +19,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import es.iovanamartinez.holyplan.dao.UsuarioAmigoDao;
 import es.iovanamartinez.holyplan.dao.UsuarioDao;
 import es.iovanamartinez.holyplan.dominio.Usuario;
+import es.iovanamartinez.holyplan.dominio.UsuarioAmigo;
+import es.iovanamartinez.holyplan.dominio.UsuarioAmigoId;
+import es.iovanamartinez.holyplan.dominio.ViajeUsuario;
 import es.iovanamartinez.holyplan.dominio.vo.UsuarioVo;
+import es.iovanamartinez.holyplan.dominio.vo.ViajeVo;
 import es.iovanamartinez.holyplan.service.UsuarioService;
 
 @Component
@@ -28,10 +37,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 	private static final String PUERTO = "587";
 	private static final String NOMBRE_HOST = "smtp.mundo-r.com";
 	private static final String REQUIERE_AUTENTICARSE = "true";
+	private static final int ID_ESTADO_RECHAZADO = 2;
+
 	
 	@Autowired
 	private UsuarioDao usuarioDao;
-
+	@Autowired
+	private UsuarioAmigoDao usuarioAmigoDao;
+	
 	@Override
 	@Transactional
 	public void crearUsuario(final UsuarioVo usuarioVo) {
@@ -60,6 +73,24 @@ public class UsuarioServiceImpl implements UsuarioService {
 			return null;
 		else
 			return new UsuarioVo(usuario);
+	}
+	
+	@Transactional(readOnly = true)
+	@Override
+	public List<ViajeVo> obtenerProximosViajes(final Integer idUsuario){
+		
+		Usuario usuario = usuarioDao.buscar(idUsuario);
+		
+		Set<ViajeUsuario> viajesUsuario = usuario.getViajes();
+		
+		Date fechaActual = new Date();
+		List<ViajeVo> viajesVo = new ArrayList<ViajeVo>();
+		for (ViajeUsuario viajeUsuario: viajesUsuario) {
+			if (viajeUsuario.getEstado().getId().compareTo(ID_ESTADO_RECHAZADO) != 0 && !viajeUsuario.getViaje().getFecha().before(fechaActual))
+				viajesVo.add(new ViajeVo(viajeUsuario.getViaje()));
+		}
+
+		return viajesVo;
 	}
 	
 	@Override
@@ -119,6 +150,26 @@ public class UsuarioServiceImpl implements UsuarioService {
 		Usuario usuario = usuarioDao.buscar(usuarioVo.getId());
 		usuario.setEmailTemp(email);
 		usuarioDao.actualizar(usuario);
+	}
+	
+	@Override
+	@Transactional
+	public void cambiarEmail(Integer id) {
+		Usuario usuario = usuarioDao.buscar(id);
+		if (usuario.getEmailTemp() != null && !usuario.getEmailTemp().isEmpty()) {
+			usuario.setEmail(usuario.getEmailTemp());
+			usuario.setEmailTemp(null);
+			usuarioDao.actualizar(usuario);
+		}
+	}
+	
+	@Override
+	@Transactional
+	public void desactivarUsuario(Integer id) {
+		Usuario usuario = usuarioDao.buscar(id);
+		usuario.setCuentaCerrada(true);
+		usuarioDao.actualizar(usuario);
+		SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
 	}
 	
 	private void enviarEmailModificacion(UsuarioVo usuario, String email) throws AddressException, MessagingException {
@@ -181,35 +232,62 @@ public class UsuarioServiceImpl implements UsuarioService {
 		t.sendMessage(message,message.getAllRecipients());
 		t.close();
 	}
-
-//	@Override
-//	public void cambiarEmail(String hash) {
-//		usuarioDao.cambiarEmail(hash);
-//	}
 	
 	@Override
 	@Transactional
-	public void cambiarEmail(Integer id) {
-		Usuario usuario = usuarioDao.buscar(id);
-		if (usuario.getEmailTemp() != null && !usuario.getEmailTemp().isEmpty()) {
-			usuario.setEmail(usuario.getEmailTemp());
-			usuario.setEmailTemp(null);
-			usuarioDao.actualizar(usuario);
+	public UsuarioVo anadirAmigo(Integer idUsuario, String nombreAmigo){
+		Usuario amigo = usuarioDao.buscarPorNombreUsuario(nombreAmigo);
+
+		Usuario usuario = usuarioDao.buscar(idUsuario);
+		UsuarioAmigo usuarioAmigo = new UsuarioAmigo(usuario, amigo);
+
+		usuario.anadirAmigo(usuarioAmigo);
+		usuarioDao.actualizar(usuario);
+		return new UsuarioVo(amigo);
+	}
+	
+	@Override
+	@Transactional(readOnly = true)
+	public List<UsuarioVo> obtenerAmigos(Integer idUsuario) {
+		Usuario usuario = usuarioDao.buscar(idUsuario);
+		Set<UsuarioAmigo> amigosUsuario = usuario.getAmigos();
+		
+		List<UsuarioVo> amigosVo = new ArrayList<UsuarioVo>();
+		for (UsuarioAmigo usuarioAmigo: amigosUsuario){
+			amigosVo.add(new UsuarioVo(usuarioAmigo.getAmigo()));
 		}
+		
+		return amigosVo;
 	}
 
-//	@Override
-//	public void desactivarUsuario(Integer id) {
-//		usuarioDao.desactivarUsuario(id);
-//		SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
-//	}
-	
+	@Override
+	@Transactional(readOnly = true)
+	public UsuarioVo buscarAmigoPorNombre(Integer idUsuario, String nombreAmigo) {
+		Usuario usuario = usuarioDao.buscar(idUsuario);
+		Set<UsuarioAmigo> amigosUsuario = usuario.getAmigos();
+		
+		Usuario amigo = usuarioDao.buscarPorNombreUsuario(nombreAmigo);
+		if (amigosUsuario.contains(new UsuarioAmigo(usuario, amigo)))
+			return new UsuarioVo(amigo);
+		else
+			return null;
+	}
+
 	@Override
 	@Transactional
-	public void desactivarUsuario(Integer id) {
-		Usuario usuario = usuarioDao.buscar(id);
-		usuario.setCuentaCerrada(true);
-		usuarioDao.actualizar(usuario);
-		SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+	public void eliminarAmigo(Integer idAmigo, Integer idUsuario) {
+		Usuario usuario = usuarioDao.buscar(idUsuario);
+//		Usuario amigo = usuarioDao.buscar(idAmigo);
+		
+		UsuarioAmigoId usuarioAmigoId = new UsuarioAmigoId(usuario.getId(), idAmigo);
+		
+		UsuarioAmigo usuarioAmigo = usuarioAmigoDao.buscar(usuarioAmigoId);
+		//Usuario usuario = usuarioDao.buscar(idUsuario);
+			
+		Set<UsuarioAmigo> amigos = usuario.getAmigos();
+		amigos.remove(usuarioAmigo);
+		
+		usuarioAmigoDao.eliminar(usuarioAmigo);
 	}
 }
+

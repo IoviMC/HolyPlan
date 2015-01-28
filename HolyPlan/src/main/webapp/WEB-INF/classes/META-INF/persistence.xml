@@ -1,9 +1,9 @@
- <persistence version="2.0" 
-  xmlns="http://java.sun.com/xml/ns/persistence" 
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence 
-                      http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-                      
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+						http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.1">                      
                       
  
 	<persistence-unit name="holyPlanPULocal" transaction-type="JTA">
@@ -17,22 +17,3 @@
 		</properties>
 	</persistence-unit>
 </persistence>
-	<!--  
-	<persistence-unit name="holyPlanPULocal" transaction-type="JTA">
-        <provider>org.hibernate.ejb.HibernatePersistence</provider>
-        <jta-data-source>jdbc/holyPlanTest</jta-data-source>
-        <exclude-unlisted-classes>true</exclude-unlisted-classes>
-        <properties>
-            <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
-            <property name="hibernate.transaction.manager_lookup_class" value="org.hibernate.transaction.SunONETransactionManagerLookup"/>
-        </properties>
-    </persistence-unit>
-</persistence>
--->
-
-
-<!--   
-<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/holyplan"/>
-<property name="javax.persistence.jdbc.user" value="root"/>
-<property name="javax.persistence.jdbc.password" value="admin12587007"/>
---> 

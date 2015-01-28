@@ -10,31 +10,20 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 import es.iovanamartinez.holyplan.dominio.Usuario;
 
-//@Component
 public class UserDetailsServiceImpl implements UserDetailsService {
   @Autowired
   private Assembler assembler;
   
- //@PersistenceUnit
- // @PersistenceContext(unitName="holyPlanPULocal")
+  @PersistenceContext
   private EntityManager em;
  
-  @PersistenceContext
- public void setEntityManager(EntityManager entityManager) {
-     this.em = entityManager;
- }
- 
- 
-  //private EntityManager em;
-
-  //@Transactional(readOnly = true)
+  @Transactional(readOnly = true)
   public UserDetails loadUserByUsername(String nombreUsuario)
       throws UsernameNotFoundException, DataAccessException {
-	  
-	//EntityManager em = factory.createEntityManager();
 	  
 	Usuario usuario = null;
 		
@@ -44,10 +33,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 		usuario = query.getSingleResult();
 	} catch (NoResultException e) {
 		throw new UsernameNotFoundException("user not found");
+	} catch (Exception e) {
+		e.printStackTrace();
+		System.out.println("Pos llega");
 	}
 	
-    if (usuario == null)
+    if (usuario == null) {
     	throw new UsernameNotFoundException("user not found");
+    }
 
     return assembler.buildUserFromUserEntity(usuario);
   }

@@ -10,6 +10,7 @@ public class CrearViajeForm {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date fecha;
 	private Integer duracion;
+	private String descripcion;
 	
 	//CONSTRUCTORES
 	public CrearViajeForm(){
@@ -39,5 +40,13 @@ public class CrearViajeForm {
 	
 	public void setDuracion(Integer duracion){
 		this.duracion = duracion;
+	}
+	
+	public String getDescripcion(){
+		return descripcion;
+	}
+	
+	public void setDescripcion(String descripcion){
+		this.descripcion = descripcion;
 	}
 }

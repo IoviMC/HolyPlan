@@ -41,7 +41,7 @@
 		</form:form>
 	
 		${mensajeRegistro}
-		<p><a href="${pageContext.request.contextPath}/public/index">&Iacute;ndice</a><p>
+		<p><a href="${pageContext.request.contextPath}/">&Iacute;ndice</a><p>
 	</div>
 </body>
 </html>

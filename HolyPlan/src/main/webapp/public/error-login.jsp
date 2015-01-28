@@ -13,9 +13,8 @@
 		<h1>HolyPlan</h1>
 	</div>
 	<div id="cuerpo">
-		<div id="lat-izq">
-			<p>Usuario o contrase&ntilde;a incorrectos</p>
-		</div>
+		<p>Usuario o contrase&ntilde;a incorrectos</p>
+
 		<div id="login-box">
 			<form name='loginForm' action="<c:url value='/j_spring_security_check' />" method='POST'>
 				<table>
