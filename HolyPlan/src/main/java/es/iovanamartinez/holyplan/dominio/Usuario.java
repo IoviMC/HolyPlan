@@ -14,16 +14,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 import es.iovanamartinez.holyplan.dominio.vo.UsuarioVo;
 
 @Entity
+@TableGenerator(name = "secuencia", initialValue = 1, allocationSize = 100, table = "tabla_id", pkColumnName = "pk", valueColumnName = "value", pkColumnValue = "usuario")
 @Table(name = "usuario")
 public class Usuario {
 	//ATRIBUTOS
 	@Id
 	@Column(name = "idusuario")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "secuencia")
+//	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 	@Column(length = 30, nullable = false)
 	private String nombreUsuario;
@@ -47,6 +50,9 @@ public class Usuario {
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<UsuarioAmigo> amigos = new HashSet<UsuarioAmigo>();
 	
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	private Set<CheckListPersona> checkListsPersona = new HashSet<CheckListPersona>();
+		
 	
 	//CONSTRUCTORES
 	public Usuario(){
@@ -57,7 +63,6 @@ public class Usuario {
 		super();
 		this.nombreUsuario = nombre;
 		this.contrasena = contrasena;
-		//TODO crear hash contraseña
 		this.email = email;
 		this.hash = generarHashUsuario();
 	}
@@ -150,14 +155,22 @@ public class Usuario {
 		this.amigos = amigos;
 	}
 	
+	public Set<CheckListPersona> getCheckListsPersona(){
+		return this.checkListsPersona;
+	}
+	
+	public void setCheckListsPersona(Set<CheckListPersona> checkListsPersona){
+		this.checkListsPersona = checkListsPersona;
+	}
+	
 	//METODOS
-	public void anadirViaje(ViajeUsuario viaje){
-		this.viajes.add(viaje);
-	}
-
-	public void anadirAmigo(UsuarioAmigo usuarioAmigo) {
-		this.amigos.add(usuarioAmigo);		
-	}
+//	public void anadirViaje(ViajeUsuario viaje){
+//		this.viajes.add(viaje);
+//	}
+//
+//	public void anadirAmigo(UsuarioAmigo usuarioAmigo) {
+//		this.amigos.add(usuarioAmigo);		
+//	}
 	
 	public String generarHashUsuario() {
 		try {

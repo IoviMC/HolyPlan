@@ -13,7 +13,7 @@
 	<div id="cuerpo">
 		<div id="bienvenido">
 			<h1>Bienvenido</h1>
-			<h2>Organiza viajes con tus amigos de la forma m&aacute;s r&aacute;pida y sencilla
+			<h2 class="inicio">Organiza viajes con tus amigos de la forma m&aacute;s r&aacute;pida y sencilla
 				con nuestra web</h2>
 			<img src="<c:url value="/resources/img/imgInicio.jpg" />" />
 		</div>

@@ -12,25 +12,26 @@
 		<h1>HolyPlan</h1>
 	</div>
 	<div id="cuerpo">
-		<h2>Registro</h2>
+		<h2><img src="<c:url value="/resources/img/user_add.png" />" /> Registro de usuario</h2>
 		<form:form method="POST" modelAttribute="registroUsuarioForm" action="${pageContext.request.contextPath}/public/registroUsuario">
 			<table>
+				<tr><th colspan="2">Datos</th></tr>
 				<tr>
-				    <td><form:label path="nombreUsuario">Nombre usuario:</form:label></td>
+				    <td><form:label path="nombreUsuario">Nombre usuario:*</form:label></td>
 					<td><form:input path="nombreUsuario" /></td>
 					<td><form:errors path="nombreUsuario" cssClass="error-validacion" /></td>
 				</tr>
 				<tr>
-				    <td><form:label path="contrasena">Contrase&ntilde;a:</form:label></td>
+				    <td><form:label path="contrasena">Contrase&ntilde;a:*</form:label></td>
 				   	<td><form:password path="contrasena" showPassword="true" /></td>
 				    <td><form:errors path="contrasena" cssClass="error-validacion" /></td>
 				</tr>
 				<tr>
-				    <td><form:label path="contrasenaConf">Repite la contrase&ntilde;a:</form:label></td>
+				    <td><form:label path="contrasenaConf">Repite la contrase&ntilde;a:*</form:label></td>
 				    <td colspan="2"><form:password path="contrasenaConf" showPassword="true" /></td>
 				</tr>
 				<tr>
-				    <td><form:label path="email">Direcci&oacute;n de correo:</form:label></td>
+				    <td><form:label path="email">Direcci&oacute;n de correo:*</form:label></td>
 					<td><form:input path="email" /></td>
 					<td><form:errors path="email" cssClass="error-validacion" /></td>
 				</tr>
@@ -41,7 +42,7 @@
 		</form:form>
 	
 		${mensajeRegistro}
-		<p><a href="${pageContext.request.contextPath}/">&Iacute;ndice</a><p>
+		<p>¿Ya tienes una cuenta en HolyPlan? <a href="${pageContext.request.contextPath}/">Inicia sesi&oacute;n</a><p>
 	</div>
 </body>
 </html>

@@ -11,7 +11,7 @@
 		<h1>HolyPlan</h1>
 	</div>
 	<div id="cuerpo">	
-		<p>Tu cuenta ha sido activada con &eacute;xito. Puedes <a href="${pageContext.request.contextPath}/public/index"> iniciar sesi&oacute;n</a> cuando quieras.</p>
+		<p>Tu cuenta ha sido activada con &eacute;xito. Puedes <a href="${pageContext.request.contextPath}/"> iniciar sesi&oacute;n</a> cuando quieras.</p>
 	</div>
 </body>
 </html>

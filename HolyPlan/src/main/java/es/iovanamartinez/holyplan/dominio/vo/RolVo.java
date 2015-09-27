@@ -6,10 +6,8 @@ import es.iovanamartinez.holyplan.dominio.Rol;
 
  public class RolVo implements Serializable{
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -1449827626372578138L;
+	
 	private Integer id;
 	private String rol;
 	

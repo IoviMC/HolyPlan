@@ -19,11 +19,13 @@
 	
 	
 	<context:annotation-config/>
+	
 	<context:component-scan base-package="es.iovanamartinez.holyplan.service"/>
 	<context:component-scan base-package="es.iovanamartinez.holyplan.dao"/>
 	<context:component-scan base-package="es.iovanamartinez.holyplan.controlador.validador"/>
 	
-
+	<context:component-scan base-package="es.iovanamartinez.holyplan.test.service"/>
+	
  	<jee:jndi-lookup id="entityManagerFactory" jndi-name="persistence/holyPlanPULocal"/>
 	
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
@@ -33,7 +35,6 @@
 	<tx:annotation-driven transaction-manager="transactionManager" />
 	
 	<tx:jta-transaction-manager />
-
 
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<property name="basename"><value>/messages/messages</value></property>

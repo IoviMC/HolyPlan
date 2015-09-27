@@ -5,32 +5,37 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 	<title>HolyPlan - Men&uacute;</title>
-	<link rel="stylesheet" href="<c:url value="/resources/css/estilo.css" />" type="text/css" />
-</head>
+	<link rel="stylesheet" href="<c:url value="/resources/css/normalize.css" />" type="text/css" />
+	<link rel="stylesheet" href="<c:url value="/resources/css/estilo.css" />" type="text/css" /></head>
 <body>
 	<div id="cabecera">
-		<h1>HolyPlan</h1>
+		<div id="cabe_izquierdo"><h1>HolyPlan</h1></div>
+		<div id="cabe_derecho">
+			Hola ${nombreUsuario}! <a href="${pageContext.request.contextPath}/logout"><img src="<c:url value="/resources/img/user_go.png"/>" /> Salir</a>
+		</div>
 	</div>
 	<div id="cuerpo">
 		<div id="lat_izquierdo">
-			<p>Hola ${nombreUsuario}</p>
-			<p><a href="${pageContext.request.contextPath}/usuario/amigos">Mis amigos</a></p>
-			<p><a href="${pageContext.request.contextPath}/usuario/editarUsuario">Modificar cuenta</a></p>
-			<p><a href="${pageContext.request.contextPath}/viaje/crearViaje">Crear viaje</a></p>
-			<p><a href="${pageContext.request.contextPath}/logout">Cerrar sesi&oacute;n</a></p>
+		 	<p><a href="${pageContext.request.contextPath}/private/menu"><img src="<c:url value="/resources/img/house.png"/>" /> Men&uacute;</a></p>		 			 
+		 	<p><a href="${pageContext.request.contextPath}/usuario/editarUsuario"><img src="<c:url value="/resources/img/datos.png"/>" /> Datos</a></p>
+		 	<p><a href="${pageContext.request.contextPath}/usuario/amigos"><img src="<c:url value="/resources/img/group.png"/>" /> Amigos</a></p>
+		 	<p><a href="${pageContext.request.contextPath}/checkListPersona/checkLists"><img src="<c:url value="/resources/img/list.png"/>" /> Listas personales</a></p>
+		 	<p><a href="${pageContext.request.contextPath}/viaje/mostrarHistorialViajes"><img src="<c:url value="/resources/img/hourglass.png"/>" /> Historial de viajes</a></p> 	
 		</div>
 		<div id="lat_derecho">
+			<h1><img src="<c:url value="/resources/img/world.png" />" /> Pr&oacute;ximos viajes</h1>
 			<c:choose>
 			    <c:when test="${empty viajes}">
-			        <p>No tiene ning&uacute; viaje planificado. Organice sus propios viajes.</p>
+			        <p>No tiene ning&uacute; viaje planificado. <a href="${pageContext.request.contextPath}/viaje/crearViaje">Organice sus propios viajes.</a></p>
 			    </c:when>
 			    <c:otherwise>
 					<c:forEach items="${viajes}" var="viaje">
-						<h1>${viaje.getNombreViaje()}</h1>
-						<fmt:formatDate value="${viaje.getFecha()}" pattern="yyyy-MM-dd" />
-						<p>${viaje.getDescripcion()}</p>
-			    		<p><a href="${pageContext.request.contextPath}/viaje/mostrarViaje/${viaje.getId()}">Ver</a></p>
+						<h2>${viaje.nombreViaje}</h2>
+						<p><fmt:formatDate value="${viaje.fecha}" pattern="yyyy-MM-dd" /></p>
+						<p>${viaje.descripcion}</p>
+						<p><a href="${pageContext.request.contextPath}/viaje/mostrarViaje/${viaje.id}"><img src="<c:url value="/resources/img/application.png"/>" /> Ver detalles del viaje</a></p>
 					</c:forEach>
+					<p><a href="${pageContext.request.contextPath}/viaje/crearViaje"><img src="<c:url value="/resources/img/car_add.png"/>" /> Nuevo viaje</a></p>
 				</c:otherwise>
 			</c:choose>
 		</div>

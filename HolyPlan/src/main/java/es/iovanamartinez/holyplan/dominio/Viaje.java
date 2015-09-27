@@ -1,5 +1,6 @@
 package es.iovanamartinez.holyplan.dominio;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,17 +14,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.TableGenerator;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity
+@TableGenerator(name = "secuencia", initialValue = 1, allocationSize = 100, table = "tabla_id", pkColumnName = "pk", valueColumnName = "value", pkColumnValue = "viaje")
 @Table(name = "viaje")
 public class Viaje {
 	//ATRIBUTOS
 	@Id
 	@Column(name = "idviaje")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+//	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.TABLE, generator = "secuencia")
 	private Integer id;
 	@Column(length = 30, nullable = false)
 	private String nombreViaje;
@@ -33,30 +37,40 @@ public class Viaje {
 	private Integer duracion;
 	@Column(length = 250)
 	private String descripcion;
+	private boolean cancelado;
+	private BigDecimal bote;
 	
 	// RELACIONES
 	@OneToMany(mappedBy = "viaje", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<ViajeUsuario> usuarios = new HashSet<ViajeUsuario>();
+	
 	@OneToMany(mappedBy = "viaje", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<GastoColectivo> gastosColectivos = new HashSet<GastoColectivo>();
+	
 	@OneToMany(mappedBy = "viaje", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<GastoIndividual> gastosIndividuales = new HashSet<GastoIndividual>();
+	
 	@OneToMany(mappedBy = "viaje", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-//	@JoinTable(name="VIAJE_HAS_TEMAS", joinColumns={@JoinColumn(name="idviaje", referencedColumnName="idviaje")}, 
-//		inverseJoinColumns={@JoinColumn(name="idtema", referencedColumnName="idtema")})
+	private Set<CheckListViaje> checkLists = new HashSet<CheckListViaje>();
+	
+	@OneToMany(mappedBy = "viaje", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private Set<Tema> temas = new HashSet<Tema>();
+	
+	@OneToMany(mappedBy = "viaje", cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	private Set<Planing> planings = new HashSet<Planing>();
 	
 	//CONSTRUCTORES
 	public Viaje(){
 		super();
 	}
 	
-	public Viaje(String nombreViaje, Date fecha, Integer duracion, String descripcion){
+	public Viaje(String nombreViaje, Date fecha, Integer duracion, String descripcion, BigDecimal bote){
 		super();
 		this.nombreViaje = nombreViaje;
 		this.fecha = fecha;
 		this.duracion = duracion;
 		this.descripcion = descripcion;
+		this.bote = bote;
 	}
 	
 	//GETTERS AND SETTERS
@@ -100,6 +114,22 @@ public class Viaje {
 		this.descripcion = descripcion;
 	}
 	
+	public boolean isCancelado() {
+		return cancelado;
+	}
+
+	public void setCancelado(boolean cancelado) {
+		this.cancelado = cancelado;
+	}
+	
+	public BigDecimal getBote(){
+		return bote;
+	}
+	
+	public void setBote(BigDecimal bote){
+		this.bote = bote;
+	}
+	
 	public Set<ViajeUsuario> getUsuarios(){
 		return usuarios;
 	}
@@ -132,18 +162,30 @@ public class Viaje {
 		this.temas = temas;
 	}
 	
-	//METODOS
-	public void anadirViajeUsuario(ViajeUsuario viajeUsuario){
-		this.usuarios.add(viajeUsuario);
+	public Set<CheckListViaje> getCheckLists() {
+		return checkLists;
+	}
+
+	public void setCheckLists(Set<CheckListViaje> checkLists) {
+		this.checkLists = checkLists;
 	}
 	
-//	public void anadirTema(Tema tema){
-//		this.temas.add(tema);
+	public Set<Planing> getPlanings() {
+		return planings;
+	}
+
+	public void setPlanings(Set<Planing> planings) {
+		this.planings = planings;
+	}
+	
+	//METODOS
+//	public void anadirViajeUsuario(ViajeUsuario viajeUsuario){
+//		this.usuarios.add(viajeUsuario);
 //	}
 	
-	public void eliminarViajeUsuario(ViajeUsuario viajeUsuario){
-		this.usuarios.remove(viajeUsuario);
-	}
+//	public void eliminarViajeUsuario(ViajeUsuario viajeUsuario){
+//		this.usuarios.remove(viajeUsuario);
+//	}
 
 	@Override
 	public int hashCode() {

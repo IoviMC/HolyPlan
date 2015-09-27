@@ -26,8 +26,7 @@ public class ViajeUsuario {
 	private Rol rol;
 	@ManyToOne
 	@JoinColumn(name = "idestado", referencedColumnName = "idestado")
-	private Estado estado;
-	
+	private Estado estado;	
 	
 	// CONSTRUCTORES
 	public ViajeUsuario() {
@@ -75,7 +74,6 @@ public class ViajeUsuario {
 	}
 	
 	//METODOS
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

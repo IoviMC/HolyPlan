@@ -42,6 +42,7 @@ public class UsuarioVo implements Serializable {
 		this.emailTemp = usuario.getEmailTemp();
 		this.activo = usuario.isActivo();
 		this.hash = usuario.getHash();
+		this.cuentaCerrada = usuario.isCuentaCerrada();
 	}
 
 	//GETTERS AND SETTERS
@@ -90,6 +91,7 @@ public class UsuarioVo implements Serializable {
 	}
 	
 	public void setActivo(boolean activo){
+		this.activo = activo;
 	}
 	
 	public String getHash(){

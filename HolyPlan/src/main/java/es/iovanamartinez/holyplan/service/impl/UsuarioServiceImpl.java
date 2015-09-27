@@ -1,7 +1,7 @@
 package es.iovanamartinez.holyplan.service.impl;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -31,8 +31,8 @@ import es.iovanamartinez.holyplan.service.UsuarioService;
 
 @Component
 public class UsuarioServiceImpl implements UsuarioService {
-	private static final String DIRECCION_CORREO_ORGIEN = "projectbike@empresagalega.eu";
-	private static final String CONTRASENA = "Project_";
+	private static final String DIRECCION_CORREO_ORGIEN = "holyplan@empresagalega.eu";
+	private static final String CONTRASENA = "HolyPlan_";
 	private static final String PROTOCOLO = "smtp";
 	private static final String PUERTO = "587";
 	private static final String NOMBRE_HOST = "smtp.mundo-r.com";
@@ -47,9 +47,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Override
 	@Transactional
-	public void crearUsuario(final UsuarioVo usuarioVo) {
+	public UsuarioVo crearUsuario(final UsuarioVo usuarioVo) {
 		Usuario usuario = new Usuario(usuarioVo);
-		usuarioDao.crear(usuario);
+		Usuario usuarioGuardado = usuarioDao.crear(usuario);
 		
 		try {
 			enviarEmailActivacion(usuario);
@@ -57,6 +57,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		catch (Exception e) {
 			e.printStackTrace();
 		}
+		return new UsuarioVo(usuarioGuardado);
 	}
 	
 	@Override
@@ -64,6 +65,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 		return  this.getUsuarioPorNombre(SecurityContextHolder.getContext().getAuthentication().getName());
 		//return (UsuarioVo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
+	
+	@Override
+	@Transactional
+	public UsuarioVo getUsuario(Integer idUsuario) {
+		Usuario usuario = usuarioDao.buscar(idUsuario);
+		return new UsuarioVo(usuario);
+	}
+	
 
 	@Override
 	@Transactional(readOnly = true)
@@ -77,16 +86,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Transactional(readOnly = true)
 	@Override
-	public List<ViajeVo> obtenerProximosViajes(final Integer idUsuario){
-		
+	public List<ViajeVo> obtenerProximosViajes(final Integer idUsuario){		
 		Usuario usuario = usuarioDao.buscar(idUsuario);
-		
 		Set<ViajeUsuario> viajesUsuario = usuario.getViajes();
-		
-		Date fechaActual = new Date();
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.MONTH,-1);
+
 		List<ViajeVo> viajesVo = new ArrayList<ViajeVo>();
 		for (ViajeUsuario viajeUsuario: viajesUsuario) {
-			if (viajeUsuario.getEstado().getId().compareTo(ID_ESTADO_RECHAZADO) != 0 && !viajeUsuario.getViaje().getFecha().before(fechaActual))
+			if (!viajeUsuario.getViaje().isCancelado() && viajeUsuario.getEstado().getId().compareTo(ID_ESTADO_RECHAZADO) != 0 && viajeUsuario.getViaje().getFecha().after(cal.getTime()))
 				viajesVo.add(new ViajeVo(viajeUsuario.getViaje()));
 		}
 
@@ -106,7 +115,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Override
 	@Transactional(readOnly = true)
 	public UsuarioVo getUsuarioPorHash(String hash){
-		Usuario usuario = usuarioDao.buscarUsuarioPorEmail(hash);
+		Usuario usuario = usuarioDao.buscarUsuarioPorHash(hash);
 		if (usuario == null)
 			return null;
 		else
@@ -123,16 +132,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Override
 	@Transactional
-	public void modificarNombreUsuario(String nuevoNombre, Integer id) {
-		Usuario usuario = usuarioDao.buscar(id);
+	public void modificarNombreUsuario(String nuevoNombre, Integer idUsuario) {
+		Usuario usuario = usuarioDao.buscar(idUsuario);
 		usuario.setNombreUsuario(nuevoNombre);
 		usuarioDao.actualizar(usuario);
 	}
 	
 	@Override
 	@Transactional
-	public void modificarContrasena(Integer id, String contrasena) {
-		Usuario usuario = usuarioDao.buscar(id);
+	public void modificarContrasena(Integer idUsuario, String contrasena) {
+		Usuario usuario = usuarioDao.buscar(idUsuario);
 		usuario.setContrasena(contrasena);
 		usuarioDao.actualizar(usuario);
 	}
@@ -154,8 +163,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Override
 	@Transactional
-	public void cambiarEmail(Integer id) {
-		Usuario usuario = usuarioDao.buscar(id);
+	public void cambiarEmail(Integer idUsuario) {
+		Usuario usuario = usuarioDao.buscar(idUsuario);
 		if (usuario.getEmailTemp() != null && !usuario.getEmailTemp().isEmpty()) {
 			usuario.setEmail(usuario.getEmailTemp());
 			usuario.setEmailTemp(null);
@@ -165,11 +174,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Override
 	@Transactional
-	public void desactivarUsuario(Integer id) {
-		Usuario usuario = usuarioDao.buscar(id);
+	public void desactivarUsuario(Integer idUsuario) {
+		Usuario usuario = usuarioDao.buscar(idUsuario);
 		usuario.setCuentaCerrada(true);
 		usuarioDao.actualizar(usuario);
-		SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
 	}
 	
 	private void enviarEmailModificacion(UsuarioVo usuario, String email) throws AddressException, MessagingException {
@@ -179,10 +187,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 
 		String textoNuevoCorreo = "<p>Hola " + usuario.getNombreUsuario() + ",<br /><br />"
 				+ "Has solicitado el cambio de la direcci&oacute;n de email asociada a tu cuenta. Si no est&aacute;s registrado en HolyPlan, simplemente ignora este correo.<br /><br />"
-				+ "Si deseas asociar tu cuenta a esta direcci&ocatue;n de email solo tienes que hacer clic en el siguiente enlace: "
-				+ "<a href=\"http://localhost:8080/HolyPlan/private/cambiarEmail?uid=" + usuario.getHash() + "\">cambiar email</a><br /><br />"
+				+ "Si deseas asociar tu cuenta a esta direcci&oactue;n de email solo tienes que hacer clic en el siguiente enlace: "
+				+ "<a href=\"http://localhost:8080/HolyPlan/usuario/cambiarEmail/" + usuario.getHash() + "\">cambiar email</a><br /><br />"
 				+ "Si el anterior enlace no funciona, copia el siguiente enlace y p&eacute;galo en tu navegador: "
-				+ "http://localhost:8080/HolyPlan/private/cambiarEmaill?uid=" + usuario.getHash() + "<br /><br />"
+				+ "http://localhost:8080/HolyPlan/usuario/cambiarEmail/" + usuario.getHash() + "<br /><br />"
 				+ "El equipo de HolyPlan.</p>";
 		
 		String textoAntiguoCorreo = "<p>Hola " + usuario.getNombreUsuario() + ",<br /><br />"
@@ -226,7 +234,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
 		message.setSubject(asunto);
 		message.setText(texto, "ISO-8859-1", "html");
-		//TODO Contrasena en texto plano?
+
 		Transport t = session.getTransport(PROTOCOLO);
 		t.connect(DIRECCION_CORREO_ORGIEN,CONTRASENA);
 		t.sendMessage(message,message.getAllRecipients());
@@ -235,14 +243,14 @@ public class UsuarioServiceImpl implements UsuarioService {
 	
 	@Override
 	@Transactional
-	public UsuarioVo anadirAmigo(Integer idUsuario, String nombreAmigo){
-		Usuario amigo = usuarioDao.buscarPorNombreUsuario(nombreAmigo);
+	public UsuarioVo anadirAmigo(Integer idUsuario, Integer idAmigo){
+		Usuario amigo = usuarioDao.buscar(idAmigo);
 
 		Usuario usuario = usuarioDao.buscar(idUsuario);
 		UsuarioAmigo usuarioAmigo = new UsuarioAmigo(usuario, amigo);
+		usuarioAmigo.setUsuario(usuario);
 
-		usuario.anadirAmigo(usuarioAmigo);
-		usuarioDao.actualizar(usuario);
+		usuarioAmigoDao.actualizar(usuarioAmigo);
 		return new UsuarioVo(amigo);
 	}
 	
@@ -256,38 +264,52 @@ public class UsuarioServiceImpl implements UsuarioService {
 		for (UsuarioAmigo usuarioAmigo: amigosUsuario){
 			amigosVo.add(new UsuarioVo(usuarioAmigo.getAmigo()));
 		}
-		
 		return amigosVo;
 	}
-
+	
 	@Override
 	@Transactional(readOnly = true)
-	public UsuarioVo buscarAmigoPorNombre(Integer idUsuario, String nombreAmigo) {
+	public boolean esUsuarioAmigo(Integer idUsuario, Integer idUsuarioAmigo) {
 		Usuario usuario = usuarioDao.buscar(idUsuario);
-		Set<UsuarioAmigo> amigosUsuario = usuario.getAmigos();
+		Usuario amigo = usuarioDao.buscar(idUsuarioAmigo);
 		
-		Usuario amigo = usuarioDao.buscarPorNombreUsuario(nombreAmigo);
+		Set<UsuarioAmigo> amigosUsuario = usuario.getAmigos();
+
 		if (amigosUsuario.contains(new UsuarioAmigo(usuario, amigo)))
-			return new UsuarioVo(amigo);
+			return true;
 		else
-			return null;
+			return false;
 	}
 
 	@Override
 	@Transactional
 	public void eliminarAmigo(Integer idAmigo, Integer idUsuario) {
 		Usuario usuario = usuarioDao.buscar(idUsuario);
-//		Usuario amigo = usuarioDao.buscar(idAmigo);
 		
 		UsuarioAmigoId usuarioAmigoId = new UsuarioAmigoId(usuario.getId(), idAmigo);
 		
 		UsuarioAmigo usuarioAmigo = usuarioAmigoDao.buscar(usuarioAmigoId);
-		//Usuario usuario = usuarioDao.buscar(idUsuario);
 			
 		Set<UsuarioAmigo> amigos = usuario.getAmigos();
 		amigos.remove(usuarioAmigo);
 		
 		usuarioAmigoDao.eliminar(usuarioAmigo);
+	}
+
+	@Override
+	public void eliminarUsuario(Integer idUsuario) {
+		Usuario usuario = usuarioDao.buscar(idUsuario);
+		usuarioDao.eliminar(usuario);
+	}
+
+	@Override
+	public List<Integer> getUsuarioAmigo(Integer idUsuario, Integer idAmigo) {
+		UsuarioAmigoId usuarioAmigoId = new UsuarioAmigoId(idUsuario, idAmigo);
+		UsuarioAmigo usuarioAmigo = usuarioAmigoDao.buscar(usuarioAmigoId);
+		List<Integer> ids = new ArrayList<Integer>();
+		ids.add(usuarioAmigo.getUsuario().getId());
+		ids.add(usuarioAmigo.getAmigo().getId());
+		return ids;
 	}
 }
 

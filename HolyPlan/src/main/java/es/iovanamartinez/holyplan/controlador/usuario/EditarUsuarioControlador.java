@@ -5,10 +5,12 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +46,10 @@ public class EditarUsuarioControlador {
         editarUsuarioForm.setEmail(usuario.getEmail());
         editarUsuarioForm.setNombreUsuario(usuario.getNombreUsuario());
         model.addAttribute("editarUsuarioForm", editarUsuarioForm);
+        
+        EditarContrasenaForm editarContrasenaForm = new EditarContrasenaForm();
+		model.addAttribute("editarContrasenaForm", editarContrasenaForm);
+		model.addAttribute("nombreUsuario", usuario.getNombreUsuario());
         
         return "/private/usuario/editar-usuario";
     }
@@ -86,19 +92,22 @@ public class EditarUsuarioControlador {
 		if (!((emailModificado && !emailValido) || (nombreUsuarioModificado && !nombreUsuarioValido))) {
 			session.setAttribute("usuario", usuario);
 
-			model.addAttribute("nombreUsuario", usuario.getNombreUsuario());
-			model.addAttribute("email", usuario.getEmail());
+//			model.addAttribute("nombreUsuario", usuario.getNombreUsuario());
+//			model.addAttribute("email", usuario.getEmail());
 			
 			model.addAttribute("mensajeCambios", "Cambios guardados con &eacute;xito.");				
 		}
 		else if (!emailModificado && !nombreUsuarioModificado)
 			model.addAttribute("mensajeCambios", "No se han efectuado cambios.");
 		
+		model.addAttribute("nombreUsuario", usuario.getNombreUsuario());
+		EditarContrasenaForm editarContrasenaForm = new EditarContrasenaForm();
+		model.addAttribute("editarContrasenaForm", editarContrasenaForm);
 		return "/private/usuario/editar-usuario";
 	}
 	
-	@RequestMapping(value = "/usuario/cambiarEmail", method = RequestMethod.GET)
-	public String confirmarCambioEmail(@RequestParam("uid") String hash, HttpServletRequest request) {
+	@RequestMapping(value = "/usuario/cambiarEmail/{uid}", method = RequestMethod.GET)
+	public String confirmarCambioEmail(@PathVariable("uid") final String hash, HttpServletRequest request, ModelMap model) {
 		HttpSession session = request.getSession();
 		UsuarioVo usuario = (UsuarioVo) session.getAttribute("usuario");
 		
@@ -107,59 +116,70 @@ public class EditarUsuarioControlador {
 			usuario.setEmail(usuario.getEmailTemp());
 			usuario.setEmailTemp(null);
 			session.setAttribute("usuario", usuario);
+			
+			model.addAttribute("nombreUsuario", usuario.getNombreUsuario());
 			return "/private/usuario/cambio-email-confirmacion";
 		}
-		else
-			//TODO manejar los errores
-			return "error";
+		else {
+			model.addAttribute("mensajeError", "Ha ocurrido un error, no se ha podido cambiar el email");
+			return "/public/error";
+		}
 	}
 	
-	@RequestMapping(value = "/usuario/editarContrasena", method = RequestMethod.GET)
-	public String mostrarFormContrasena(ModelMap modelo){
-		EditarContrasenaForm editarContrasenaForm = new EditarContrasenaForm();
-		modelo.addAttribute("editarContrasenaForm", editarContrasenaForm);
-		return "/private/usuario/editar-contrasena";
-	}
+//	@RequestMapping(value = "/usuario/editarContrasena", method = RequestMethod.GET)
+//	public String mostrarFormContrasena(ModelMap model){
+//		EditarContrasenaForm editarContrasenaForm = new EditarContrasenaForm();
+//		model.addAttribute("editarContrasenaForm", editarContrasenaForm);
+//		return "/private/usuario/editar-contrasena";
+//	}
 	
 	@RequestMapping(value = "/usuario/editarContrasena", method = RequestMethod.POST)
 	public String editarContrasena(@ModelAttribute @Valid EditarContrasenaForm editarContrasenaForm, BindingResult result,
-			ModelMap modelo, HttpServletRequest request) {
-		
-		editarContrasenaValidador.validate(editarContrasenaForm, result);
-		if (!result.hasErrors()) {
-			HttpSession session = request.getSession();
-			UsuarioVo usuario = (UsuarioVo) session.getAttribute("usuario");
-			
-			usuario.setContrasena(editarContrasenaForm.getContrasenaNueva());
-			usuarioService.modificarContrasena(usuario.getId(), editarContrasenaForm.getContrasenaNueva());
-			session.setAttribute("usuario", usuario);
-			modelo.addAttribute("mensajeContrasena", "La contrase&ntilde;a ha sido modificada con &eacute;xito");
-		}
-		return "/private/usuario/editar-contrasena";
-	}
-	
-	@RequestMapping(value = "/usuario/desactivarCuenta", method = RequestMethod.GET)
-	public String mostrarDesacativarCuenta(ModelMap modelo, HttpServletRequest request){
+			ModelMap model, HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		UsuarioVo usuario = (UsuarioVo) session.getAttribute("usuario");
 		
-		modelo.addAttribute("hash", usuario.getHash());
+		editarContrasenaValidador.validate(editarContrasenaForm, result);
+		if (!result.hasErrors()) {			
+			usuario.setContrasena(editarContrasenaForm.getContrasenaNueva());
+			usuarioService.modificarContrasena(usuario.getId(), editarContrasenaForm.getContrasenaNueva());
+			session.setAttribute("usuario", usuario);
+			model.addAttribute("mensajeContrasena", "La contrase&ntilde;a ha sido modificada con &eacute;xito");
+		}
+		
+        EditarUsuarioForm editarUsuarioForm = new EditarUsuarioForm();
+        editarUsuarioForm.setNombreUsuario(usuario.getNombreUsuario());
+        editarUsuarioForm.setEmail(usuario.getEmail());
+        model.addAttribute("nombreUsuario", usuario.getNombreUsuario());
+        model.addAttribute("editarUsuarioForm", editarUsuarioForm);
+		return "/private/usuario/editar-usuario";
+	}
+	
+	@RequestMapping(value = "/usuario/desactivarCuenta", method = RequestMethod.GET)
+	public String mostrarDesacativarCuenta(ModelMap model, HttpServletRequest request){
+		HttpSession session = request.getSession();
+		UsuarioVo usuario = (UsuarioVo) session.getAttribute("usuario");
+		
+		model.addAttribute("nombreUsuario", usuario.getNombreUsuario());
+		model.addAttribute("hash", usuario.getHash());
 		return "/private/usuario/desactivar-cuenta";
 	}
 	
 	@RequestMapping(value = "/usuario/confDesactivarCuenta", method = RequestMethod.GET)
-	public String desacativarCuenta(@RequestParam("uid") String hash, ModelMap modelo, HttpServletRequest request){
+	public String desacativarCuenta(@RequestParam("uid") String hash, ModelMap model, HttpServletRequest request){
 		
 		HttpSession session = request.getSession();
 		UsuarioVo usuario = (UsuarioVo) session.getAttribute("usuario");
 		
 		if (usuario.getHash().compareTo(hash)==0) {
 			usuarioService.desactivarUsuario(usuario.getId());
+			SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
 			return "redirect:/";
 		}
-		else
-			//TODO manejar los errores
-			return "error";
+		else {
+			model.addAttribute("mensajeError", "Ha ocurrido un error, no se ha podido desactivar la cuenta");
+			return "/public/error";
+		}
 	}
 }
 

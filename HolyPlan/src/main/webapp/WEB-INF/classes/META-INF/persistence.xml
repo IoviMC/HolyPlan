@@ -6,14 +6,35 @@
 	version="2.1">                      
                       
  
-	<persistence-unit name="holyPlanPULocal" transaction-type="JTA">
+  	<persistence-unit name="holyPlanPULocal" transaction-type="JTA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>jdbc/holyPlanTest</jta-data-source>
 		<properties>
-		 
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
-		     
 		</properties>
 	</persistence-unit>
+	
+<!--   	<persistence-unit name="holyPlanPULocalPruebas" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<properties>
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="true" />
+		</properties>
+	</persistence-unit> -->
+<!-- 	<persistence-unit name="holyPlanPULocal" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider> 
+		<properties> 
+			<property name="hibernate.archive.autodetection" value="class" /> 
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" /> 
+			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" /> 
+			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/holyplan" /> 
+			<property name="hibernate.connection.username" value="root" /> 
+			<property name="hibernate.connection.password" value="12587007" /> 
+			<property name="hibernate.show_sql" value="true"/> 
+			<property name="hibernate.flushMode" value="FLUSH_AUTO" /> 
+			<property name="hibernate.hbm2ddl.auto" value="update" /> 
+		</properties> 
+	</persistence-unit> -->
+
 </persistence>

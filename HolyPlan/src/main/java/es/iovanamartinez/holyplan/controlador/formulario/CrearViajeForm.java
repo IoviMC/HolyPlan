@@ -1,5 +1,6 @@
 package es.iovanamartinez.holyplan.controlador.formulario;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -11,6 +12,7 @@ public class CrearViajeForm {
 	private Date fecha;
 	private Integer duracion;
 	private String descripcion;
+	private BigDecimal bote;
 	
 	//CONSTRUCTORES
 	public CrearViajeForm(){
@@ -48,5 +50,13 @@ public class CrearViajeForm {
 	
 	public void setDescripcion(String descripcion){
 		this.descripcion = descripcion;
+	}
+	
+	public BigDecimal getBote(){
+		return bote;
+	}
+	
+	public void setBote(BigDecimal bote){
+		this.bote = bote;
 	}
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import es.iovanamartinez.holyplan.dominio.vo.UsuarioVo;
 import es.iovanamartinez.holyplan.dominio.vo.ViajeVo;
@@ -53,12 +52,12 @@ public class MenuControlador {
         return "/private/menu-usuario";
     }
 	
-	@RequestMapping(value = "/private/menu", method = RequestMethod.POST)
-	public String mostrarViaje(@RequestParam("uid") Integer idViaje, ModelMap model){
-		
-		ViajeVo viaje = viajeService.getViaje(idViaje);
-		
-		model.addAttribute("viaje", viaje);
-		return "/viaje/mostrar-viaje";
-	}
+//	@RequestMapping(value = "/private/menu", method = RequestMethod.POST)
+//	public String mostrarViaje(@RequestParam("uid") Integer idViaje, ModelMap model){
+//		
+//		ViajeVo viaje = viajeService.getViaje(idViaje);
+//		
+//		model.addAttribute("viaje", viaje);
+//		return "/viaje/mostrar-viaje";
+//	}
 }

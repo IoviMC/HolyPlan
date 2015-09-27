@@ -6,10 +6,8 @@ import es.iovanamartinez.holyplan.dominio.ViajeUsuario;
 
 
 public class ViajeUsuarioVo implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -8724881160162886470L;
+
 	//ATRIBUTOS
 	private UsuarioVo usuario;
 	private ViajeVo viaje;

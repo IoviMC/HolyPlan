@@ -10,20 +10,24 @@ import es.iovanamartinez.holyplan.dominio.vo.ViajeVo;
 
 @Service
 public interface UsuarioService {
-	void crearUsuario(UsuarioVo usuarioVo);
+	UsuarioVo crearUsuario(UsuarioVo usuarioVo);
 	UsuarioVo getUsuarioActual();
 	UsuarioVo getUsuarioPorNombre(String nombreUsuario);
 	UsuarioVo getUsuarioPorEmail(String email);
 	UsuarioVo getUsuarioPorHash(String hash);
 	void activarUsuario(String hash);
-	void desactivarUsuario(Integer id);
-	void modificarNombreUsuario(String nuevoNombre, Integer id);
-	void modificarContrasena(Integer id, String contrasena);
+	void desactivarUsuario(Integer idUsuario);
+	void modificarNombreUsuario(String nuevoNombre, Integer idUsuario);
+	void modificarContrasena(Integer idUsuario, String contrasena);
 	void guardarEmailTemp(UsuarioVo usuario, String email);
-	void cambiarEmail(Integer id);
-	UsuarioVo anadirAmigo(Integer idUsuario, String nombreAmigo);
-	List<UsuarioVo> obtenerAmigos(Integer id);
-	UsuarioVo buscarAmigoPorNombre(Integer idUsuario, String nombreAmigo);
+	void cambiarEmail(Integer idUsuario);
+	UsuarioVo anadirAmigo(Integer idUsuario, Integer idAmigo);
+	List<UsuarioVo> obtenerAmigos(Integer idUsuario);
+//	UsuarioVo buscarAmigoPorNombre(Integer idUsuario, String nombreAmigo);
 	List<ViajeVo> obtenerProximosViajes(Integer idUsuario);
 	void eliminarAmigo(Integer idAmigo, Integer idUsuario);
+	boolean esUsuarioAmigo(Integer idUsuario, Integer idUsuarioAmigo);
+	UsuarioVo getUsuario(Integer idUsuario);
+	void eliminarUsuario(Integer idUsuario);
+	List<Integer> getUsuarioAmigo(Integer idUsuario, Integer idAmigo);
 }
