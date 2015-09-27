@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:mvc="http://www.springframework.org/schema/mvc" 
+		xmlns:tx="http://www.springframework.org/schema/tx"
+		xsi:schemaLocation="
+	        http://www.springframework.org/schema/beans     
+	        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	        http://www.springframework.org/schema/context 
+	        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	        http://www.springframework.org/schema/mvc 
+	  	 	http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+	   		http://www.springframework.org/schema/tx 
+	   		http://www.springframework.org/schema/tx/spring-tx.xsd
+	   		http://www.springframework.org/schema/jee 
+	   		http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+	 
+	<context:annotation-config/>
+	<context:component-scan base-package="es.iovanamartinez.holyplan.service"/>
+	<context:component-scan base-package="es.iovanamartinez.holyplan.dao"/>
+	<context:component-scan base-package="es.iovanamartinez.holyplan.controlador.validador"/>
+	<context:component-scan base-package="es.iovanamartinez.holyplan.test.service"/>
+	 
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+	    <property name="url" value="jdbc:mysql://localhost:3306/holyplantest" />
+	    <property name="username" value="root" />
+	    <property name="password" value="12587007" />
+	</bean>
+	 
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+			<!--
+			JPA requires META-INF/persistence.xml, but somehow prefers the one
+			in classes/META-INF over the one in test-classes/META-INF. Spring
+			to the rescue, as it allows for setting things differently, like by
+			referring to "classpath:persistence-TEST.xml". Or, simply referring
+			to "META-INF/persistence.xml" makes JPA use the test version too: 
+			-->
+		<property name="packagesToScan" value="es.iovanamartinez.holyplan.dominio"></property>
+		<property name="persistenceXmlLocation" value="META-INF/persistence.xml" />
+		<!-- As defined in /src/test/resources/META-INF/persistence.xml -->
+		<property name="persistenceUnitName" value="holyPlanPULocalTest" />
+		<property name="jpaVendorAdapter">
+			<bean
+			    class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory"/>
+	</bean>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	
+	<tx:jta-transaction-manager />
+
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename"><value>/messages/messages</value></property>
+		<property name="defaultEncoding" value="UTF-8" /> 
+	</bean>
+	
+	<!-- 	Spring MVC -->
+	<import resource="mvc-dispatcher-servlet.xml"/>
+	
+	<!-- 	Spring Security -->
+	<import resource="spring-security.xml"/>
+</beans>

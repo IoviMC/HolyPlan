@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+						http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+	version="2.1">                      
+
+	<persistence-unit name="holyPlanPULocalTest" transaction-type="JTA">
+	
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		
+		<class>es.iovanamartinez.holyplan.dominio.Viaje</class>
+		<class>es.iovanamartinez.holyplan.dominio.CheckListViaje</class>
+		<class>es.iovanamartinez.holyplan.dominio.ViajeUsuario</class>
+		<class>es.iovanamartinez.holyplan.dominio.GastoColectivo</class>
+		<class>es.iovanamartinez.holyplan.dominio.GastoIndividual</class>
+		<class>es.iovanamartinez.holyplan.dominio.Tema</class>
+ 		<class>es.iovanamartinez.holyplan.dominio.ViajeUsuarioId</class>
+		<class>es.iovanamartinez.holyplan.dominio.UsuarioAmigoId</class>
+		<class>es.iovanamartinez.holyplan.dominio.UsuarioAmigo</class>
+		<class>es.iovanamartinez.holyplan.dominio.Usuario</class>
+		<class>es.iovanamartinez.holyplan.dominio.Rol</class>
+		<class>es.iovanamartinez.holyplan.dominio.Planing</class>
+		<class>es.iovanamartinez.holyplan.dominio.Parada</class>
+		<class>es.iovanamartinez.holyplan.dominio.PagoGastoColectivo</class>
+		<class>es.iovanamartinez.holyplan.dominio.CheckListPersona</class>
+		<class>es.iovanamartinez.holyplan.dominio.Estado</class>
+		<class>es.iovanamartinez.holyplan.dominio.ItemListPersona</class>
+		<class>es.iovanamartinez.holyplan.dominio.ItemListViaje</class>
+		<class>es.iovanamartinez.holyplan.dominio.Mensaje</class>
+		<class>es.iovanamartinez.holyplan.test.service.ViajeServiceTest</class> 
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties> 
+			<property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.SunOneJtaPlatform" />
+			<property name="hibernate.archive.autodetection" value="class" /> 
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLInnoDBDialect" /> 
+			<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" /> 
+			<property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/holyplantest" /> 
+			<property name="hibernate.connection.username" value="root" /> 
+			<property name="hibernate.connection.password" value="12587007" />
+			
+		</properties> 
+	</persistence-unit>
+
+</persistence>
